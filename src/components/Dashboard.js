@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // eslint-disable-next-line
   const [users, setUsers] = useState([]);
   const socketRef = useRef();
   const navigate = useNavigate();
