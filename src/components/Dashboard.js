@@ -5,9 +5,8 @@ import io from 'socket.io-client';
 const Dashboard = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const socketRef = useRef();
@@ -65,17 +64,6 @@ const Dashboard = () => {
         msg._id === messageId ? { ...msg, status, readAt } : msg
       ));
     });
-
-    // Load chat history when selecting a user
-    const loadChatHistory = async (receiverId) => {
-      try {
-        const response = await fetch(`/api/messages/history/${user._id}/${receiverId}`);
-        const history = await response.json();
-        setMessages(history);
-      } catch (error) {
-        console.error('Error loading chat history:', error);
-      }
-    };
 
     // Handle window resize
     const handleResize = () => {
