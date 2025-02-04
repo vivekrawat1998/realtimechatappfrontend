@@ -1,3 +1,25 @@
+# Realtime Chat App
+
+This is a realtime chat application built with React and Socket.io.
+
+## Installation
+
+```bash
+npm install
+```
+
+## Usage
+
+```bash
+npm start
+```
+
+## Build
+
+```bash
+npm run build
+```
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
