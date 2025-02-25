@@ -22,13 +22,15 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/users/login`,
+        `${process.env.REACT_APP_API_URL}/user/login`,
         loginData
       );
       if (response.data) {
-        // Store both token and user data
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        
+      alert("Login successfully! Redirecting to Dashboard page...");
+        window.location.reload()
         navigate("/dashboard");
       }
     } catch (error) {

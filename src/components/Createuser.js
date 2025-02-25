@@ -1,47 +1,55 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = ({ onUserCreated }) => {
-  const [fullname, setFullname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newUser = {
-      fullname,
-      email,
-      password,
-    };
+    const newUser = { fullname, email, password };
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, newUser);
-      
-    
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/register`,
+        newUser
+      );
 
       if (onUserCreated) {
         onUserCreated(response.data.newUser);
       }
 
-      // Store the token if needed
-      localStorage.setItem('token', response.data.token);
-      navigator.push('/login');
-      setFullname('');
-      setEmail('');
-      setPassword('');
+      localStorage.setItem("token", response.data.token);
+
+      alert("Registered successfully! Redirecting to login page...");
+      window.location.reload();
+      navigate("/login");
+
+      setFullname("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      alert("Registration failed! Please try again.");
     }
   };
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-8 w-96">
-        <h2 className="text-2xl font-semibold text-center mb-6">Register User</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">
+          Register User
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fullname">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="fullname"
+            >
               Full Name
             </label>
             <input
@@ -54,7 +62,10 @@ const Signup = ({ onUserCreated }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -67,7 +78,10 @@ const Signup = ({ onUserCreated }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
