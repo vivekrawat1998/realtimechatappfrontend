@@ -18,7 +18,6 @@ const Dashboard = () => {
     console.log('Dashboard mounted');
     console.log('User from localStorage:', localStorage.getItem('user'));
 
-    // Connect to socket server
     socketRef.current = io(`${process.env.REACT_APP_API_URL}`);
     
     const user = JSON.parse(localStorage.getItem('user'));
@@ -31,43 +30,35 @@ const Dashboard = () => {
       return;
     }
 
-    // Join chat
     socketRef.current.emit('join', { userId: user._id, username: user.username });
 
-    // Listen for users list update
     socketRef.current.on('users', (updatedUsers) => {
       setUsers(updatedUsers.filter(u => u.userId !== user._id));
     });
 
-    // Listen for online users updates
     socketRef.current.on('onlineUsers', (users) => {
       const currentUser = JSON.parse(localStorage.getItem('user'));
       console.log('Received online users:', users);
-      // Filter out current user and ensure username exists
       const filteredUsers = users.filter(u => 
         u.userId !== currentUser._id && u.username
       );
       setOnlineUsers(filteredUsers);
     });
 
-    // Listen for incoming messages
     socketRef.current.on('receiveMessage', (newMessage) => {
       setMessages(prev => [...prev, newMessage]);
     });
 
-    // Listen for sent message confirmation
     socketRef.current.on('messageSent', (sentMessage) => {
       setMessages(prev => [...prev, sentMessage]);
     });
 
-    // Listen for message status updates
     socketRef.current.on('message-status-update', ({ messageId, status, readAt }) => {
       setMessages(prev => prev.map(msg => 
         msg._id === messageId ? { ...msg, status, readAt } : msg
       ));
     });
 
-    // Handle window resize
     const handleResize = () => {
       setIsSidebarOpen(window.innerWidth > 768);
     };
@@ -95,11 +86,9 @@ const Dashboard = () => {
     }
   };
 
-  // Update the setSelectedUser function
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    // Load chat history when selecting a user
     fetch(`/api/messages/history/${currentUser._id}/${user.userId}`)
       .then(res => res.json())
       .then(history => setMessages(history))
@@ -115,7 +104,6 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Mobile Menu Button */}
       <button 
         className="md:hidden fixed top-4 left-4 z-20 p-2 bg-gray-800 text-white rounded"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -123,16 +111,13 @@ const Dashboard = () => {
         {isSidebarOpen ? '✕' : '☰'}
       </button>
 
-      {/* Responsive Sidebar */}
       <div className={`
         fixed md:static w-64 bg-gray-800 text-white h-full 
         transition-transform duration-300 ease-in-out z-10
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
       `}>
-        {/* Sidebar */}
         <div className="w-64 bg-gray-800 text-white flex flex-col">
-          {/* Active User Profile */}
           <div className="p-4 border-b border-gray-700">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center">
@@ -145,7 +130,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Online Users List */}
           <div className="p-4 flex-1 overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">Online Users ({onlineUsers.length})</h2>
             <div className="space-y-2">
@@ -156,7 +140,6 @@ const Dashboard = () => {
                   className={`flex items-center p-3 cursor-pointer rounded hover:bg-gray-700 transition-colors
                     ${selectedUser?.userId === user.userId ? 'bg-gray-700' : ''}`}
                 >
-                  {/* Online indicator */}
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                   <div className="flex flex-col">
                     <span className="text-white font-medium">{user.username}</span>
